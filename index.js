@@ -29,28 +29,39 @@ if (!!argv.s || !!argv.stock) {
 
 
 
-    let i = 0;
-    let result = false;
-    let resultId ="";
-    while (result!=true) {
-      resultId = generateId()
-      result = checkTwId(resultId );
-    }
-//     const clipboardy = require('clipboardy');
-//     // Copy
-// clipboardy.writeSync(resultId);
+  let i = 0;
+  let result = false;
+  let resultId = "";
+  while (result != true) {
+    resultId = generateId()
+    result = checkTwId(resultId);
+  }
+  //     const clipboardy = require('clipboardy');
+  //     // Copy
+  // clipboardy.writeSync(resultId);
 
-// // // Paste
-// // clipboardy.readSync();
-// //🦄
-    console.log(resultId);
-  pbcopy(resultId);
-  
+  // // // Paste
+  // // clipboardy.readSync();
+  // //🦄
+
+  if (printComputerInfo() == "win") {
+    wincopy(resultId);
+  } else {
+    pbcopy(resultId);
+  }
+  console.log(resultId);
+}
+
+function wincopy(id){
+  // https://iter01.com/42918.html
+  const { exec } = require('child_process');
+  // exec('echo '+id+' | clip');
+  exec('clip').stdin.end(id);
 }
 
 
 function pbcopy(id) {
-  var proc = require('child_process').spawn('pbcopy'); 
+  var proc = require('child_process').spawn('pbcopy');
   proc.stdin.write(id); proc.stdin.end();
 }
 // https://www.twse.com.tw/exchangeReport/STOCK_DAY_ALL?response=open_dat
@@ -61,9 +72,9 @@ function passData(object, index) {
   return object[indexParse];
 }
 
-function generateId(){
+function generateId() {
   const firstN = Math.floor(Math.random() * 26);
- 
+
   const secN = Math.floor(Math.random() * 2 + 1);
   let otherN = "";
   for (let i = 0; i < 8; i++) {
@@ -138,4 +149,28 @@ function checkTwId(id) {
   } else {
     return false;
   }
+}
+
+
+function printComputerInfo() {
+
+  const os = require("os");
+
+
+  switch (os.platform()) {
+    case "darwin":
+      return "osx";
+      break;
+
+    case "android":
+      break;
+    case "linux":
+      break;
+    case "win32":
+      return "win";
+      break;
+    default:
+      console.log("you os not recognize");
+  }
+
 }
